@@ -1,0 +1,1 @@
+ALTER TABLE "users" ALTER COLUMN "birth_date" SET DATA TYPE varchar(100);

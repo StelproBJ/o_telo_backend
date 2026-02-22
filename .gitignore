@@ -1,5 +1,11 @@
 # dependencies (bun install)
 node_modules
+node_modules/
+dist/
+.env
+.DS_Store
+*.log
+.drizzle/
 
 # output
 out
