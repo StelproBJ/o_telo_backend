@@ -62,7 +62,12 @@ export const resolvers = {
 
   Mutation: {
     signupUser: async (_: any, args: { input: any }) => {
-      return authService.signupUser(args.input);
+      try {
+        return await authService.signupUser(args.input);
+      } catch (err: any) {
+        console.error('Signup error:', err);
+        throw err;
+      }
     },
 
     addHotel: async (_: any, args: { input: any }, context: AuthContext) => {

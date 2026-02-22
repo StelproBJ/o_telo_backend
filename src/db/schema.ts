@@ -2,7 +2,7 @@ import { pgTable, uuid, varchar, text, timestamp, decimal, pgEnum, uniqueIndex, 
 import { relations } from 'drizzle-orm';
 
 // Enums
-export const genderEnum = pgEnum('gender', ['MALE', 'FEMALE', 'OTHER']);
+export const genderEnum = pgEnum('gender', ['MALE', 'FEMALE']);
 export const roleEnum = pgEnum('role', ['USER', 'ADMIN']);
 export const priceRangeEnum = pgEnum('price_range', ['LOW', 'MID', 'HIGH']);
 export const hotelStatusEnum = pgEnum('hotel_status', ['PENDING', 'APPROVED', 'REJECTED']);
@@ -16,7 +16,7 @@ export const users = pgTable('users', {
   firstName: varchar('first_name', { length: 100 }).notNull(),
   lastName: varchar('last_name', { length: 100 }).notNull(),
   gender: genderEnum('gender'),
-  birthDate: timestamp('birth_date'),
+  birthDate: varchar('birth_date', { length: 100 }),
   role: roleEnum('role').notNull().default('USER'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow()

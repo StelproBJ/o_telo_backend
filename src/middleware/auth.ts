@@ -38,10 +38,16 @@ export async function authenticateUser(authToken?: string): Promise<AuthContext>
       .where(eq(users.firebaseUid, decodedToken.uid))
       .limit(1);
 
+    // ✅ CORRECTION ICI
     if (!dbUser) {
-      throw new GraphQLError('User not found in database', {
-        extensions: { code: 'UNAUTHENTICATED' }
-      });
+      // Token Firebase valide mais user pas encore dans PostgreSQL
+      // C'est normal pour signupUser - on retourne un contexte non-authentifié
+      console.log('⚠️ Token Firebase valide mais utilisateur pas encore dans la BD');
+      return {
+        user: null,
+        isAuthenticated: false,
+        isAdmin: false
+      };
     }
 
     return {

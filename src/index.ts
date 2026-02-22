@@ -1,4 +1,5 @@
 import Fastify from 'fastify';
+import cors from '@fastify/cors';
 import { ApolloServer } from '@apollo/server';
 import fastifyApollo, { fastifyApolloDrainPlugin } from '@as-integrations/fastify';
 import * as dotenv from 'dotenv';
@@ -31,13 +32,18 @@ async function startServer() {
     logger: true
   });
 
+  // 🔑 Register CORS plugin BEFORE Apollo
+  await app.register(cors, {
+    origin: true, 
+    credentials: true,              
+  });
+
   // Create Apollo Server
   const apollo = new ApolloServer<AuthContext>({
     typeDefs,
     resolvers,
     plugins: [fastifyApolloDrainPlugin(app)],
     formatError: (error) => {
-      // Log error for debugging
       console.error('GraphQL Error:', error);
       return error;
     }
@@ -48,20 +54,18 @@ async function startServer() {
   // Register Apollo middleware
   await app.register(fastifyApollo(apollo), {
     context: async (request) => {
-      // Extract token from Authorization header
       const authHeader = request.headers.authorization;
       const token = authHeader?.startsWith('Bearer ')
         ? authHeader.substring(7)
         : undefined;
 
-      // Authenticate user
       const authContext = await authenticateUser(token);
       return authContext;
     }
   });
 
   // Health check endpoint
-  app.get('/health', async (request, reply) => {
+  app.get('/health', async () => {
     return { status: 'ok', timestamp: new Date().toISOString() };
   });
 

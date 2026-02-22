@@ -11,15 +11,21 @@
     "db:migrate": "drizzle-kit push:pg",
     "db:studio": "drizzle-kit studio"
   },
-  "keywords": ["graphql", "typescript", "postgresql", "firebase"],
+  "keywords": [
+    "graphql",
+    "typescript",
+    "postgresql",
+    "firebase"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "@apollo/server": "^4.10.0",
-    "@as-integrations/fastify": "^2.1.1",
+    "@as-integrations/fastify": "^2.1.0",
+    "@fastify/cors": "^8.5.0",
     "dotenv": "^16.4.1",
     "drizzle-orm": "^0.29.3",
-    "fastify": "^4.25.2",
+    "fastify": "^4.29.1",
     "firebase-admin": "^12.0.0",
     "graphql": "^16.8.1",
     "graphql-scalars": "^1.22.4",

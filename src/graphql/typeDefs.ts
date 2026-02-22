@@ -4,7 +4,6 @@ export const typeDefs = `#graphql
   enum Gender {
     MALE
     FEMALE
-    OTHER
   }
 
   enum Role {
@@ -32,7 +31,7 @@ export const typeDefs = `#graphql
     firstName: String!
     lastName: String!
     gender: Gender
-    birthDate: DateTime
+    birthDate: String
     role: Role!
     createdAt: DateTime!
     updatedAt: DateTime!
@@ -106,7 +105,7 @@ export const typeDefs = `#graphql
     firstName: String!
     lastName: String!
     gender: Gender
-    birthDate: DateTime
+    birthDate: String
   }
 
   input AddHotelInput {
