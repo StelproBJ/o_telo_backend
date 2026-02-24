@@ -1,6 +1,6 @@
 {
-  "id": "1e8f2f5e-6c9f-4649-90bd-6543726519ae",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "ed57aa47-d2f8-4a0e-9a7b-efaab4980d01",
+  "prevId": "7932fb8b-57bc-4a72-aa6a-2ada2db56c49",
   "version": "5",
   "dialect": "pg",
   "tables": {
@@ -124,6 +124,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "address": {
+          "name": "address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "latitude": {
           "name": "latitude",
           "type": "numeric(10, 7)",
@@ -139,6 +145,12 @@
         "price_range": {
           "name": "price_range",
           "type": "price_range",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "min_price": {
+          "name": "min_price",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -415,7 +427,7 @@
         },
         "birth_date": {
           "name": "birth_date",
-          "type": "timestamp",
+          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": false
         },
@@ -496,8 +508,7 @@
       "name": "gender",
       "values": {
         "MALE": "MALE",
-        "FEMALE": "FEMALE",
-        "OTHER": "OTHER"
+        "FEMALE": "FEMALE"
       }
     },
     "hotel_status": {

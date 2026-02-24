@@ -16,7 +16,7 @@ export const users = pgTable('users', {
   firstName: varchar('first_name', { length: 100 }).notNull(),
   lastName: varchar('last_name', { length: 100 }).notNull(),
   gender: genderEnum('gender'),
-  birthDate: varchar('birth_date', { length: 100 }),
+  birthDate: varchar('birth_date',  { length: 100 }),
   role: roleEnum('role').notNull().default('USER'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow()
@@ -33,9 +33,11 @@ export const hotels = pgTable('hotels', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
+  address: text('address'), // ✅ Adresse de l'hôtel
   latitude: decimal('latitude', { precision: 10, scale: 7 }).notNull(),
   longitude: decimal('longitude', { precision: 10, scale: 7 }).notNull(),
-  priceRange: priceRangeEnum('price_range'),
+  priceRange: priceRangeEnum('price_range'), // Garder pour compatibilité
+  minPrice: integer('min_price'), // ✅ Prix minimum en FCFA
   status: hotelStatusEnum('status').notNull().default('PENDING'),
   phoneContact: varchar('phone_contact', { length: 20 }),
   emailContact: varchar('email_contact', { length: 255 }),
