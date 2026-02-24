@@ -107,7 +107,7 @@ export const typeDefs = `#graphql
     firstName: String!
     lastName: String!
     gender: Gender
-    birthDate: DateTime
+    birthDate: String
   }
 
   input AddHotelInput {
