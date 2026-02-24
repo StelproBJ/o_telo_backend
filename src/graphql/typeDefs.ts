@@ -41,10 +41,12 @@ export const typeDefs = `#graphql
     id: ID!
     name: String!
     description: String
+    address: String
     latitude: Float!
     longitude: Float!
     distance: Float
     priceRange: PriceRange
+    minPrice: Int
     status: HotelStatus!
     phoneContact: String
     emailContact: String
@@ -105,15 +107,17 @@ export const typeDefs = `#graphql
     firstName: String!
     lastName: String!
     gender: Gender
-    birthDate: String
+    birthDate: DateTime
   }
 
   input AddHotelInput {
     name: String!
     description: String
+    address: String
     latitude: Float!
     longitude: Float!
     priceRange: PriceRange
+    minPrice: Int
     phoneContact: String
     emailContact: String
     websiteLink: String
@@ -125,9 +129,11 @@ export const typeDefs = `#graphql
   input UpdateHotelInput {
     name: String
     description: String
+    address: String
     latitude: Float
     longitude: Float
     priceRange: PriceRange
+    minPrice: Int
     phoneContact: String
     emailContact: String
     websiteLink: String
