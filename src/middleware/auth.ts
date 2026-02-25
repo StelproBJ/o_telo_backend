@@ -13,6 +13,8 @@ export interface AuthContext {
     firstName: string;
     lastName: string;
     role: 'USER' | 'ADMIN';
+    warningCount: number;
+    isSuspended: number;
   } | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
@@ -38,16 +40,10 @@ export async function authenticateUser(authToken?: string): Promise<AuthContext>
       .where(eq(users.firebaseUid, decodedToken.uid))
       .limit(1);
 
-    // ✅ CORRECTION ICI
     if (!dbUser) {
-      // Token Firebase valide mais user pas encore dans PostgreSQL
-      // C'est normal pour signupUser - on retourne un contexte non-authentifié
-      console.log('⚠️ Token Firebase valide mais utilisateur pas encore dans la BD');
-      return {
-        user: null,
-        isAuthenticated: false,
-        isAdmin: false
-      };
+      throw new GraphQLError('User not found in database', {
+        extensions: { code: 'UNAUTHENTICATED' }
+      });
     }
 
     return {
@@ -58,7 +54,9 @@ export async function authenticateUser(authToken?: string): Promise<AuthContext>
         username: dbUser.username,
         firstName: dbUser.firstName,
         lastName: dbUser.lastName,
-        role: dbUser.role
+        role: dbUser.role,
+        warningCount: dbUser.warningCount,
+        isSuspended: dbUser.isSuspended
       },
       isAuthenticated: true,
       isAdmin: dbUser.role === 'ADMIN'
