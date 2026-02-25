@@ -7,6 +7,20 @@ import { sortByDistance } from '../utils/distance';
 
 export class HotelService {
   async addHotel(input: AddHotelInput, userId: string) {
+    // Vérifier si l'utilisateur est suspendu
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    if (user && user.isSuspended === 1) {
+      throw new GraphQLError(
+        'Your account is suspended. You cannot submit hotels. Please contact an administrator.',
+        { extensions: { code: 'SUSPENDED' } }
+      );
+    }
+
     // Validate input
     const validatedInput = addHotelSchema.parse(input);
 

@@ -16,8 +16,12 @@ export const users = pgTable('users', {
   firstName: varchar('first_name', { length: 100 }).notNull(),
   lastName: varchar('last_name', { length: 100 }).notNull(),
   gender: genderEnum('gender'),
-  birthDate: varchar('birth_date',  { length: 100 }),
+  birthDate: varchar('birth_date', { length: 100 }),
   role: roleEnum('role').notNull().default('USER'),
+  adminPassword: varchar('admin_password', { length: 255 }), // ✅ Mot de passe admin
+  warningCount: integer('warning_count').notNull().default(0), // ✅ Nombre d'avertissements
+  resetCount: integer('reset_count').notNull().default(0), // ✅ Nombre de réinitialisations
+  isSuspended: integer('is_suspended').notNull().default(0), // ✅ 0 = false, 1 = true
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow()
 }, (table) => {
@@ -33,20 +37,22 @@ export const hotels = pgTable('hotels', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
-  address: text('address'), // ✅ Adresse de l'hôtel
+  address: text('address'),
   latitude: decimal('latitude', { precision: 10, scale: 7 }).notNull(),
   longitude: decimal('longitude', { precision: 10, scale: 7 }).notNull(),
-  priceRange: priceRangeEnum('price_range'), // Garder pour compatibilité
-  minPrice: integer('min_price'), // ✅ Prix minimum en FCFA
+  priceRange: priceRangeEnum('price_range'),
+  minPrice: integer('min_price'),
   status: hotelStatusEnum('status').notNull().default('PENDING'),
+  rejectionCount: integer('rejection_count').notNull().default(0), // ✅ Compteur de rejets
+  rejectionReason: text('rejection_reason'),
+  locked: integer('locked').notNull().default(0), // ✅ Verrouillé après 3 rejets
   phoneContact: varchar('phone_contact', { length: 20 }),
   emailContact: varchar('email_contact', { length: 255 }),
   websiteLink: text('website_link'),
   whatsappLink: text('whatsapp_link'),
-  images: text('images').array(), // Array of Firebase Storage URLs
-  videos: text('videos').array(), // Array of Firebase Storage URLs
+  images: text('images').array(),
+  videos: text('videos').array(),
   createdBy: uuid('created_by').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  rejectionReason: text('rejection_reason'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow()
 }, (table) => {
@@ -91,6 +97,39 @@ export const adminNotifications = pgTable('admin_notifications', {
   };
 });
 
+// ✅ NOUVEAU: Notifications Utilisateur
+export const notificationTypeEnum = pgEnum('notification_type', ['REJECTION', 'WARNING', 'SUSPENSION', 'INFO']);
+
+export const notifications = pgTable('notifications', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  type: notificationTypeEnum('type').notNull(),
+  message: text('message').notNull(),
+  isRead: integer('is_read').notNull().default(0),
+  createdAt: timestamp('created_at').notNull().defaultNow()
+}, (table) => {
+  return {
+    userIdIdx: index('notification_user_id_idx').on(table.userId),
+    isReadIdx: index('notification_is_read_idx').on(table.isRead)
+  };
+});
+
+// ✅ NOUVEAU: Logs Admin (Audit Trail)
+export const adminLogs = pgTable('admin_logs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  adminId: uuid('admin_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  action: varchar('action', { length: 100 }).notNull(),
+  targetUserId: uuid('target_user_id').references(() => users.id, { onDelete: 'set null' }),
+  targetHotelId: uuid('target_hotel_id').references(() => hotels.id, { onDelete: 'set null' }),
+  details: text('details'),
+  createdAt: timestamp('created_at').notNull().defaultNow()
+}, (table) => {
+  return {
+    adminIdIdx: index('admin_log_admin_id_idx').on(table.adminId),
+    createdAtIdx: index('admin_log_created_at_idx').on(table.createdAt)
+  };
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   hotels: many(hotels),
@@ -125,5 +164,29 @@ export const adminNotificationsRelations = relations(adminNotifications, ({ one 
   user: one(users, {
     fields: [adminNotifications.userId],
     references: [users.id]
+  })
+}));
+
+// ✅ Relations Notifications
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, {
+    fields: [notifications.userId],
+    references: [users.id]
+  })
+}));
+
+// ✅ Relations Admin Logs
+export const adminLogsRelations = relations(adminLogs, ({ one }) => ({
+  admin: one(users, {
+    fields: [adminLogs.adminId],
+    references: [users.id]
+  }),
+  targetUser: one(users, {
+    fields: [adminLogs.targetUserId],
+    references: [users.id]
+  }),
+  targetHotel: one(hotels, {
+    fields: [adminLogs.targetHotelId],
+    references: [hotels.id]
   })
 }));

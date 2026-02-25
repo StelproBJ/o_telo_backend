@@ -4,6 +4,7 @@ export const typeDefs = `#graphql
   enum Gender {
     MALE
     FEMALE
+    OTHER
   }
 
   enum Role {
@@ -33,6 +34,9 @@ export const typeDefs = `#graphql
     gender: Gender
     birthDate: String
     role: Role!
+    warningCount: Int!
+    resetCount: Int!
+    isSuspended: Boolean!
     createdAt: DateTime!
     updatedAt: DateTime!
   }
@@ -48,6 +52,9 @@ export const typeDefs = `#graphql
     priceRange: PriceRange
     minPrice: Int
     status: HotelStatus!
+    rejectionCount: Int!
+    rejectionReason: String
+    locked: Boolean!
     phoneContact: String
     emailContact: String
     websiteLink: String
@@ -57,7 +64,6 @@ export const typeDefs = `#graphql
     avgRating: Float
     reviewCount: Int!
     creator: User!
-    rejectionReason: String
     createdAt: DateTime!
     updatedAt: DateTime!
   }
@@ -86,6 +92,16 @@ export const typeDefs = `#graphql
       offset: Int
     ): [Review!]!
     myReviewForHotel(hotelId: ID!): Review
+    
+    # Notifications
+    myNotifications(limit: Int): [Notification!]!
+    unreadNotificationsCount: Int!
+    
+    # Admin Queries
+    adminStats: AdminStats!
+    adminAllHotels: [Hotel!]!
+    adminAllUsers: [User!]!
+    adminLogs(limit: Int): [AdminLog!]!
   }
 
   type Mutation {
@@ -98,6 +114,18 @@ export const typeDefs = `#graphql
     
     addOrUpdateReview(input: AddReviewInput!): Review!
     deleteReview(id: ID!): Boolean!
+    
+    # Notifications
+    markNotificationAsRead(id: ID!): Boolean!
+    markAllNotificationsAsRead: Boolean!
+    deleteNotification(id: ID!): Boolean!
+    
+    # Admin Mutations
+    verifyAdminPassword(password: String!): AdminPasswordVerification!
+    adminApproveHotel(hotelId: ID!): Hotel!
+    adminRejectHotel(hotelId: ID!, reason: String!): Hotel!
+    adminResetUserWarnings(userId: ID!): User!
+    adminUnlockHotel(hotelId: ID!): Hotel!
   }
 
   input SignupUserInput {
@@ -107,7 +135,7 @@ export const typeDefs = `#graphql
     firstName: String!
     lastName: String!
     gender: Gender
-    birthDate: String
+    birthDate: DateTime
   }
 
   input AddHotelInput {
@@ -159,5 +187,49 @@ export const typeDefs = `#graphql
   input LocationInput {
     latitude: Float!
     longitude: Float!
+  }
+
+  # ===== ADMIN TYPES =====
+
+  type Notification {
+    id: ID!
+    userId: ID!
+    type: NotificationType!
+    message: String!
+    isRead: Boolean!
+    createdAt: DateTime!
+  }
+
+  enum NotificationType {
+    REJECTION
+    WARNING
+    SUSPENSION
+    INFO
+  }
+
+  type AdminLog {
+    id: ID!
+    adminId: ID!
+    admin: User!
+    action: String!
+    targetUserId: ID
+    targetUser: User
+    targetHotelId: ID
+    targetHotel: Hotel
+    details: String
+    createdAt: DateTime!
+  }
+
+  type AdminStats {
+    pendingHotels: Int!
+    suspendedUsers: Int!
+    lockedSubmissions: Int!
+    totalHotels: Int!
+    totalUsers: Int!
+  }
+
+  type AdminPasswordVerification {
+    success: Boolean!
+    message: String
   }
 `;

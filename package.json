@@ -23,6 +23,8 @@
     "@apollo/server": "^4.10.0",
     "@as-integrations/fastify": "^2.1.0",
     "@fastify/cors": "^8.5.0",
+    "@types/bcrypt": "^6.0.0",
+    "bcrypt": "^6.0.0",
     "dotenv": "^16.4.1",
     "drizzle-orm": "^0.29.3",
     "fastify": "^4.29.1",
