@@ -64,6 +64,22 @@ export const hotels = pgTable('hotels', {
   };
 });
 
+// ✅ NOUVEAU: Prix par Type de Chambre
+export const roomPrices = pgTable('room_prices', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  hotelId: uuid('hotel_id').notNull().references(() => hotels.id, { onDelete: 'cascade' }),
+  roomType: varchar('room_type', { length: 255 }).notNull(), // Ex: "Chambre Standard", "Suite Deluxe"
+  price: integer('price').notNull(), // Prix en FCFA
+  image: text('image'), // URL de l'image de la chambre
+  description: text('description'), // Description de la chambre (optionnel)
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow()
+}, (table) => {
+  return {
+    hotelIdIdx: index('room_prices_hotel_id_idx').on(table.hotelId)
+  };
+});
+
 // Reviews Table
 export const reviews = pgTable('reviews', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -142,7 +158,8 @@ export const hotelsRelations = relations(hotels, ({ one, many }) => ({
     references: [users.id]
   }),
   reviews: many(reviews),
-  notifications: many(adminNotifications)
+  notifications: many(adminNotifications),
+  roomPrices: many(roomPrices) // ✅ NOUVEAU
 }));
 
 export const reviewsRelations = relations(reviews, ({ one }) => ({
@@ -153,6 +170,14 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
   user: one(users, {
     fields: [reviews.userId],
     references: [users.id]
+  })
+}));
+
+// ✅ NOUVEAU: Relations RoomPrices
+export const roomPricesRelations = relations(roomPrices, ({ one }) => ({
+  hotel: one(hotels, {
+    fields: [roomPrices.hotelId],
+    references: [hotels.id]
   })
 }));
 
