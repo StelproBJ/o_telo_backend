@@ -250,7 +250,7 @@ export class HotelService {
       ...r.hotel,
       distance: (r.hotel as any).distance,
       avgRating: r.avgRating ? parseFloat(r.avgRating as string) : null,
-      reviewCount: r.reviewCount ? parseInt(r.reviewCount as string) : 0,
+      reviewCount: r.reviewCount ? parseInt(r.reviewCount as unknown as string) : 0,
       creator: r.creator
     }));
   }
@@ -291,7 +291,7 @@ export class HotelService {
     return {
       ...result.hotel,
       avgRating: result.avgRating ? parseFloat(result.avgRating as string) : null,
-      reviewCount: result.reviewCount ? parseInt(result.reviewCount as string) : 0,
+      reviewCount: result.reviewCount ? parseInt(result.reviewCount as unknown as string) : 0,
       creator: result.creator
     };
   }

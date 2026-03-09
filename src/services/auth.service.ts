@@ -52,7 +52,7 @@ export class AuthService {
           firstName: validatedInput.firstName,
           lastName: validatedInput.lastName,
           gender: validatedInput.gender,
-          birthDate: validatedInput.birthDate ? new Date(validatedInput.birthDate) : null,
+          birthDate: validatedInput.birthDate ? validatedInput.birthDate : null,
           role: 'USER',
         })
         .returning();
