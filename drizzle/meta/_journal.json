@@ -1,0 +1,48 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1771671253347,
+      "tag": "0001_damp_kate_bishop",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1771925299220,
+      "tag": "0002_nervous_blue_shield",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1771926506154,
+      "tag": "0003_little_terror",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1771927267860,
+      "tag": "0004_wakeful_beyonder",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1772008469274,
+      "tag": "0005_watery_the_leader",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1772010336917,
+      "tag": "0006_thin_lady_vermin",
+      "breakpoints": true
+    }
+  ]
+}
