@@ -41,6 +41,17 @@ export const typeDefs = `#graphql
     updatedAt: DateTime!
   }
 
+  type RoomPrice {
+    id: ID!
+    hotelId: ID!
+    roomType: String!
+    price: Int!
+    image: String
+    description: String
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
   type Hotel {
     id: ID!
     name: String!
@@ -61,6 +72,7 @@ export const typeDefs = `#graphql
     whatsappLink: String
     images: [String!]
     videos: [String!]
+    roomPrices: [RoomPrice!]!
     avgRating: Float
     reviewCount: Int!
     creator: User!
@@ -126,6 +138,9 @@ export const typeDefs = `#graphql
     adminRejectHotel(hotelId: ID!, reason: String!): Hotel!
     adminResetUserWarnings(userId: ID!): User!
     adminUnlockHotel(hotelId: ID!): Hotel!
+    adminAddHotelImage(hotelId: ID!, imageUrl: String!): Hotel!
+    adminRemoveHotelImage(hotelId: ID!, imageUrl: String!): Hotel!
+    adminLinkImageToRoom(roomPriceId: ID!, imageUrl: String!): RoomPrice!
   }
 
   input SignupUserInput {
@@ -136,6 +151,13 @@ export const typeDefs = `#graphql
     lastName: String!
     gender: Gender
     birthDate: DateTime
+  }
+
+  input RoomPriceInput {
+    roomType: String!
+    price: Int!
+    image: String
+    description: String
   }
 
   input AddHotelInput {
@@ -152,6 +174,7 @@ export const typeDefs = `#graphql
     whatsappLink: String
     images: [String!]
     videos: [String!]
+    roomPrices: [RoomPriceInput!]
   }
 
   input UpdateHotelInput {
