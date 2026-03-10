@@ -1,6 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { db } from '../db/client';
-import { hotels, reviews, adminNotifications, users } from '../db/schema';
+import { hotels, reviews, adminNotifications, users, roomPrices } from '../db/schema';
 import { eq, and, ilike, sql, avg, count } from 'drizzle-orm';
 import { AddHotelInput, UpdateHotelInput, HotelFilters, Location, addHotelSchema, updateHotelSchema } from '../utils/validation';
 import { sortByDistance } from '../utils/distance';
@@ -30,9 +30,11 @@ export class HotelService {
       .values({
         name: validatedInput.name,
         description: validatedInput.description,
+        address: validatedInput.address, // ✅ Ajouté
         latitude: validatedInput.latitude.toString(),
         longitude: validatedInput.longitude.toString(),
         priceRange: validatedInput.priceRange,
+        minPrice: validatedInput.minPrice, // ✅ Ajouté
         phoneContact: validatedInput.phoneContact,
         emailContact: validatedInput.emailContact,
         websiteLink: validatedInput.websiteLink,
@@ -43,6 +45,21 @@ export class HotelService {
         status: 'PENDING'
       })
       .returning();
+
+    // ✅ Créer les room prices si fournis
+    if (validatedInput.roomPrices && validatedInput.roomPrices.length > 0) {
+      const roomPricesToInsert = validatedInput.roomPrices.map(rp => ({
+        hotelId: newHotel.id,
+        roomType: rp.roomType,
+        price: rp.price,
+        image: rp.image || null,
+        description: rp.description || null
+      }));
+      
+      await db.insert(roomPrices).values(roomPricesToInsert);
+      
+      console.log(`✅ ${roomPricesToInsert.length} prix de chambres créés pour ${newHotel.name}`);
+    }
 
     // Create admin notification
     await this.createAdminNotification('HOTEL_ADDED', newHotel.id, userId, 
