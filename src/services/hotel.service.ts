@@ -199,7 +199,8 @@ export class HotelService {
           id: users.id,
           username: users.username,
           firstName: users.firstName,
-          lastName: users.lastName
+          lastName: users.lastName,
+          phoneNumber: users.phoneNumber
         }
       })
       .from(hotels)
@@ -282,7 +283,8 @@ export class HotelService {
           id: users.id,
           username: users.username,
           firstName: users.firstName,
-          lastName: users.lastName
+          lastName: users.lastName,
+          phoneNumber: users.phoneNumber
         }
       })
       .from(hotels)
