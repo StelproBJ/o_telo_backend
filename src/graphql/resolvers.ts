@@ -5,6 +5,9 @@ import { authService } from '../services/auth.service';
 import { hotelService } from '../services/hotel.service';
 import { reviewService } from '../services/review.service';
 import { adminResolvers } from './adminResolvers';
+import { db } from '../db/client';
+import { roomPrices } from '../db/schema';
+import { eq } from 'drizzle-orm';
 
 export const resolvers = {
   DateTime: DateTimeResolver,
@@ -124,7 +127,14 @@ export const resolvers = {
     longitude: (parent: any) => parseFloat(parent.longitude),
     images: (parent: any) => parent.images || [],
     videos: (parent: any) => parent.videos || [],
-    locked: (parent: any) => parent.locked === 1
+    locked: (parent: any) => parent.locked === 1,
+    roomPrices: async (parent: any) => {
+      const prices = await db
+        .select()
+        .from(roomPrices)
+        .where(eq(roomPrices.hotelId, parent.id));
+      return prices || [];
+    }
   },
 
   Review: {
