@@ -7,23 +7,31 @@ export const signupUserSchema = z.object({
   username: z.string().min(3, 'Username must be at least 3 characters').max(50),
   firstName: z.string().min(1, 'First name is required').max(100),
   lastName: z.string().min(1, 'Last name is required').max(100),
-  gender: z.enum(['MALE', 'FEMALE']).optional(),
-  birthDate: z.string().optional(),
+  gender: z.enum(['MALE', 'FEMALE', 'OTHER']).optional(),
+  birthDate: z.string().datetime().optional()
 });
 
 // Hotel validation
 export const addHotelSchema = z.object({
   name: z.string().min(1, 'Hotel name is required').max(255),
   description: z.string().optional(),
+  address: z.string().optional(),
   latitude: z.number().min(-90).max(90),
   longitude: z.number().min(-180).max(180),
   priceRange: z.enum(['LOW', 'MID', 'HIGH']).optional(),
+  minPrice: z.number().int().positive().optional(),
   phoneContact: z.string().max(20).optional(),
-  emailContact: z.string().email().optional(),
-  websiteLink: z.string().url().optional(),
-  whatsappLink: z.string().url().optional(),
+  emailContact: z.string().email().optional().or(z.literal('')),
+  websiteLink: z.string().url().optional().or(z.literal('')),
+  whatsappLink: z.string().optional(),
   images: z.array(z.string().url()).optional(),
-  videos: z.array(z.string().url()).optional()
+  videos: z.array(z.string().url()).optional(),
+  roomPrices: z.array(z.object({
+    roomType: z.string().min(1, 'Room type is required'),
+    price: z.number().int().positive(),
+    image: z.string().url().optional(),
+    description: z.string().optional()
+  })).optional()
 });
 
 export const updateHotelSchema = z.object({
