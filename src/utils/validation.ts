@@ -3,12 +3,13 @@ import { z } from 'zod';
 // User validation
 export const signupUserSchema = z.object({
   firebaseUid: z.string().min(1, 'Firebase UID is required'),
-  phoneNumber: z.string().min(10, 'Valid phone number is required'),
+  email: z.string().email('Valid email is required'),
+  phoneNumber: z.string().min(10, 'Valid phone number is required').optional(),
   username: z.string().min(3, 'Username must be at least 3 characters').max(50),
   firstName: z.string().min(1, 'First name is required').max(100),
   lastName: z.string().min(1, 'Last name is required').max(100),
-  gender: z.enum(['MALE', 'FEMALE', 'OTHER']).optional(),
-  birthDate: z.string().datetime().optional()
+  gender: z.enum(['MALE', 'FEMALE']).optional(),
+  birthDate: z.string().optional()
 });
 
 // Hotel validation

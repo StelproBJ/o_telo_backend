@@ -11,7 +11,8 @@ export const hotelStatusEnum = pgEnum('hotel_status', ['PENDING', 'APPROVED', 'R
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   firebaseUid: varchar('firebase_uid', { length: 255 }).notNull().unique(),
-  phoneNumber: varchar('phone_number', { length: 20 }).notNull().unique(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  phoneNumber: varchar('phone_number', { length: 20 }),
   username: varchar('username', { length: 50 }).notNull().unique(),
   firstName: varchar('first_name', { length: 100 }).notNull(),
   lastName: varchar('last_name', { length: 100 }).notNull(),
@@ -26,6 +27,7 @@ export const users = pgTable('users', {
   updatedAt: timestamp('updated_at').notNull().defaultNow()
 }, (table) => {
   return {
+    emailIdx: index('email_idx').on(table.email),
     phoneNumberIdx: index('phone_number_idx').on(table.phoneNumber),
     usernameIdx: index('username_idx').on(table.username),
     firebaseUidIdx: index('firebase_uid_idx').on(table.firebaseUid)

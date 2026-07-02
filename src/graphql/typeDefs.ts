@@ -27,7 +27,8 @@ export const typeDefs = `#graphql
   type User {
     id: ID!
     firebaseUid: String!
-    phoneNumber: String!
+    email: String!
+    phoneNumber: String
     username: String!
     firstName: String!
     lastName: String!
@@ -37,17 +38,6 @@ export const typeDefs = `#graphql
     warningCount: Int!
     resetCount: Int!
     isSuspended: Boolean!
-    createdAt: DateTime!
-    updatedAt: DateTime!
-  }
-
-  type RoomPrice {
-    id: ID!
-    hotelId: ID!
-    roomType: String!
-    price: Int!
-    image: String
-    description: String
     createdAt: DateTime!
     updatedAt: DateTime!
   }
@@ -72,10 +62,21 @@ export const typeDefs = `#graphql
     whatsappLink: String
     images: [String!]
     videos: [String!]
-    roomPrices: [RoomPrice!]!
+    roomPrices: [RoomPrice!]
     avgRating: Float
     reviewCount: Int!
-    creator: User!
+    creator: User
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  type RoomPrice {
+    id: ID!
+    hotelId: ID!
+    roomType: String!
+    price: Int!
+    image: String
+    description: String
     createdAt: DateTime!
     updatedAt: DateTime!
   }
@@ -138,26 +139,17 @@ export const typeDefs = `#graphql
     adminRejectHotel(hotelId: ID!, reason: String!): Hotel!
     adminResetUserWarnings(userId: ID!): User!
     adminUnlockHotel(hotelId: ID!): Hotel!
-    adminAddHotelImage(hotelId: ID!, imageUrl: String!): Hotel!
-    adminRemoveHotelImage(hotelId: ID!, imageUrl: String!): Hotel!
-    adminLinkImageToRoom(roomPriceId: ID!, imageUrl: String!): RoomPrice!
   }
 
   input SignupUserInput {
     firebaseUid: String!
-    phoneNumber: String!
+    email: String!
+    phoneNumber: String
     username: String!
     firstName: String!
     lastName: String!
     gender: Gender
-    birthDate: DateTime
-  }
-
-  input RoomPriceInput {
-    roomType: String!
-    price: Int!
-    image: String
-    description: String
+    birthDate: String
   }
 
   input AddHotelInput {
@@ -175,6 +167,13 @@ export const typeDefs = `#graphql
     images: [String!]
     videos: [String!]
     roomPrices: [RoomPriceInput!]
+  }
+
+  input RoomPriceInput {
+    roomType: String!
+    price: Int!
+    image: String
+    description: String
   }
 
   input UpdateHotelInput {
